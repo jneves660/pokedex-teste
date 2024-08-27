@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Pokémon</title>
+   <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Detalhes do Pokémon</h1>
+    </header>
+
+    <main class="pokemon-details">
+        <div id="pokemon-info">
+            <!-- As informações do Pokémon serão carregadas aqui -->
+        </div>
+        <button onclick="window.history.back()">Voltar</button>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const pokemonId = urlParams.get('id');
+
+            const pokemonInfo = document.getElementById('pokemon-info');
+            const apiUrl = `https://pokeapi.co/api/v2/pokemon/${pokemonId}/`;
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    pokemonInfo.innerHTML = `
+                        <h2>#${data.id} ${data.name.charAt(0).toUpperCase() + data.name.slice(1)}</h2>
+                        <img src="${data.sprites.front_default}" alt="${data.name}">
+                        <p><strong>Altura:</strong> ${data.height / 10} m</p>
+                        <p><strong>Peso:</strong> ${data.weight / 10} kg</p>
+                        <p><strong>Tipos:</strong> ${data.types.map(typeInfo => typeInfo.type.name).join(', ')}</p>
+                        <p><strong>Habilidades:</strong> ${data.abilities.map(abilityInfo => abilityInfo.ability.name).join(', ')}</p>
+                    `;
+                })
+                .catch(error => {
+                    pokemonInfo.innerHTML = `<p>Erro ao carregar as informações do Pokémon.</p>`;
+                    console.error('Erro:', error);
+                });
+        });
+    </script>
+</body>
+</html>
